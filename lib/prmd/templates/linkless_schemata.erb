@@ -13,7 +13,7 @@
   if schemata['$ref']
     separator = " < "
     nested_title = schema.dereference(schemata['$ref'])[1]['title'].split(' - ', 2).last
-    inheritance += separator + "<a href='\##{nested_title}'>#{nested_title}</a>"
+    inheritance += separator + "[#{nested_title}](\##{nested_title})"
     separator = ", "
   end
 
@@ -22,7 +22,7 @@
     schemata['allOf'].each do |object|
       if object.has_key?('$ref')
         nested_title = schema.dereference(object)[1]['title'].split(' - ', 2).last
-        inheritance += separator + "<a href='\##{nested_title}'>#{nested_title}</a>"
+        inheritance += separator + "[#{nested_title}](\##{nested_title})"
         separator = ", "
       end
     end

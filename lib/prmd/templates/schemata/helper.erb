@@ -36,7 +36,7 @@
           description = descriptions.last
         end
 
-        example = [*examples].map { |e| "<code>#{e.to_json}</code>" }.join(" or ")
+        example = [*examples].map { |e| "`#{e.to_json}`" }.join(" or ")
         attributes << [key, "string", description, example]
 
       # found a nested object
@@ -63,7 +63,7 @@
           line_break = "<br/>"
         end
 
-        attribute[2] = "<b>type:</b> <a href='\##{innervalue['title'].split(' - ', 2).last}'>#{innervalue['title'].split(' - ', 2).last}</a>#{line_break}" + attribute[2]
+        attribute[2] = "**type:** [#{innervalue['title'].split(' - ', 2).last}](\##{innervalue['title'].split(' - ', 2).last})#{line_break}" + attribute[2]
         attributes << attribute
       # just a regular attribute
       else
@@ -97,11 +97,11 @@
   def build_attribute(schema, key, value)
     description = value['description'] || ""
     if value['default']
-      description += "<br/><b>default:</b> <code>#{value['default'].to_json}</code>"
+      description += "<br/> **default:** `#{value['default'].to_json}`"
     end
 
     if value['minimum'] || value['maximum']
-      description += "<br/><b>Range:</b> <code>"
+      description += "<br/> **Range:** `"
       if value['minimum']
         comparator = value['exclusiveMinimum'] ? "<" : "<="
         description += "#{value['minimum'].to_json} #{comparator} "
@@ -111,27 +111,27 @@
         comparator = value['exclusiveMaximum'] ? "<" : "<="
         description += " #{comparator} #{value['maximum'].to_json}"
       end
-      description += "</code>"
+      description += "`"
     end
 
     if value['enum']
-      description += '<br/><b>one of:</b>' + [*value['enum']].map { |e| "<code>#{e.to_json}</code>" }.join(" or ")
+      description += '<br/> **one of:**' + [*value['enum']].map { |e| "`#{e.to_json}`" }.join(" or ")
     end
 
     if value['pattern']
-      description += "<br/><b>pattern: </b><code>#{value['pattern']}</code>"
+      description += "<br/> **pattern:** <code>#{value['pattern'].gsub /\|/, '&#124;'}</code>"
     end
 
     if value.has_key?('example')
       example = if value['example'].is_a?(Hash) && value['example'].has_key?('oneOf')
-        value['example']['oneOf'].map { |e| "<code>#{e.to_json}</code>" }.join(" or ")
+        value['example']['oneOf'].map { |e| "`#{e.to_json}`" }.join(" or ")
       else
-        "<code>#{value['example'].to_json}</code>"
+        "`#{value['example'].to_json}`"
       end
     elsif value['type'] == ['array'] && value.has_key?('items')
-      example = "<code>#{schema.schema_value_example(value)}</code>"
+      example = "`#{schema.schema_value_example(value)}`"
     elsif value['type'].include?('null')
-      example = "<code>null</code>"
+      example = "`null`"
     end
 
     type = if value['type'].include?('null')
