@@ -58,7 +58,11 @@ module Prmd
 
     def schema_value_example(value)
       if value.has_key?('example')
-        value['example']
+        if value['example'].is_a?(Hash) && value['example'].has_key?('oneOf')
+          value['example']['oneOf'][0]
+        else
+          value['example']
+        end
       elsif value.has_key?('anyOf')
         ref = value['anyOf'].detect {|ref| ref['$ref'].split('/').last == 'id'} || value['anyOf'].first
         schema_example(ref)
