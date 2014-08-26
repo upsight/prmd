@@ -28,23 +28,27 @@
     end
   end
 %>
-## <a name="<%= title %>"><%= title %></a><%= inheritance %>
+<a name="<%= title %>"><%= title %></a><%= inheritance %>
+------------------------------
 <%= schemata['description'] %>
-
 <%- if schemata['properties'] && !schemata['properties'].empty? %>
-### Attributes
-| Name | Type | Description | Example |
-| ------- | ------- | ------- | ------- |
-  <%- extract_attributes(schema, schemata['properties']).each do |(key, type, description, example)| %>
-| **<%= key %>** | *<%= type %>* | <%= description %> | <%= example %> |
-  <%- end %>
+  <%-
+    required = schemata['required']
+    attributes = extract_attributes(schema, schemata['properties'])
+  %>
 <%- end %>
 <%- if schemata['allOf'] %>
+  <%-
+    required = extract_allOf_required(schema, schemata['allOf'])
+    attributes = extract_allOf_attributes(schema, schemata['allOf'])
+  %>
+<%- end %>
+<%- unless attributes.empty? %>
 ### Attributes
-| Name | Type | Description | Example |
-| ------- | ------- | ------- | ------- |
-  <%- extract_allOf_attributes(schema, schemata['allOf']).each do |(key, type, description, example)| %>
-| **<%= key %>** | *<%= type %>* | <%= description %> | <%= example %> |
+| Name | Required | Type | Description | Example |
+| ------- | ------- | ------- | ------- | ------- |
+  <%- attributes.each do |(key, type, description, example)| %>
+| **<%= key %>** | <%- if !required.include?(key) %>(optional)<%- end %> | *<%= type %>* | <%= description %> | <%= example %> |
   <%- end %>
 <%- end %>
 
