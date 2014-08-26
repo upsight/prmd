@@ -10,9 +10,9 @@
 
   title = schemata['title'].split(' - ', 2).last
 %>
-## <%= title %>
+<%= title %>
+------------------------------
 <%= schemata['description'] %>
-
 <%- if schemata['properties'] && !schemata['properties'].empty? %>
 ### Attributes
 | Name | Type | Description | Example |
