@@ -39,7 +39,7 @@
 <%- end %>
 <%- if schemata['allOf'] %>
   <%-
-    required = extract_allOf_required(schema, schemata['allOf'])
+    required = extract_allOf_required(schema, schemata['allOf'], '')
     attributes = extract_allOf_attributes(schema, schemata['allOf'])
   %>
 <%- end %>

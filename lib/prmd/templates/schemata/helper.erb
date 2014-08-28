@@ -93,18 +93,31 @@
     return attributes.values
   end
 
-  def extract_allOf_required(schema, allOf)
+  def extract_required(schema, object, prefix)
     required = []
-    # allOf, start with first item and override with subsequent (this assumes subsequent are more strict)
-    allOf.each do |object|
-      if object.has_key?('$ref')
-        _, value = schema.dereference(object)
-        if value.has_key?('required')
-          value['required'].each { |item| required.push(item) }
-        end
-      elsif object.has_key?('required')
-        object['required'].each { |item| required.push(item) }
+    if object.has_key?('$ref')
+      key, value = schema.dereference(object)
+      extract_required(schema, value, key).each { |nested| required.push(prefix + '->' + nested) }
+    end
+    if object.has_key?('required')
+      object['required'].each { |item| required.push(item) }
+    end
+    if object.has_key?('properties')
+      object['properties'].each do |key, value|
+        extract_required(schema, value, key).each { |nested| required.push(nested) }
       end
+    end
+    return required
+  end
+
+  def extract_allOf_required(schema, object, prefix)
+    required = []
+    # object, start with first item and override with subsequent (this assumes subsequent are more strict)
+    object.each do |value|
+      if value.has_key?('$ref')
+        _, value = schema.dereference(value['$ref'])
+      end
+      extract_required(schema, value, prefix).each { |nested| required.push(nested) }
     end
     return required
   end

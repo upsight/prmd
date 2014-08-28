@@ -15,10 +15,11 @@
 <%= schemata['description'] %>
 <%- if schemata['properties'] && !schemata['properties'].empty? %>
 ### Attributes
-| Name | Type | Description | Example |
-| ------- | ------- | ------- | ------- |
+| Name | Required | Type | Description | Example |
+| ------- | ------- | ------- | ------- | ------- |
+<%- required = extract_required(schema, schemata['allOf'], '') %>
 <%- extract_attributes(schema, schemata['properties']).each do |(key, type, description, example)| %>
-| **<%= key %>** | *<%= type %>* | <%= description %> | <%= example %> |
+| **<%= key %>** | <%- if !required.include?(key) %>(optional)<%- end %> | *<%= type %>* | <%= description %> | <%= example %> |
 <%- end %>
 <%- end %>
 <%- schemata['links'].each do |link, datum| %>
