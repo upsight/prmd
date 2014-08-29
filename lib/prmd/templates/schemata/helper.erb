@@ -44,7 +44,7 @@
         attributes << build_attribute(schema, key, value)
         nested = extract_attributes(schema, value['properties'])
         nested.each do |attribute|
-          attribute[0] = "#{key}->#{attribute[0]}"
+          attribute[0] = "#{key}:#{attribute[0]}"
         end
         attributes.concat(nested)
       # found an array with nested objects
@@ -97,7 +97,7 @@
     required = []
     if object.has_key?('$ref')
       key, value = schema.dereference(object)
-      extract_required(schema, value, key).each { |nested| required.push(prefix + '->' + nested) }
+      extract_required(schema, value, key).each { |nested| required.push(prefix + ':' + nested) }
     end
     if object.has_key?('required')
       object['required'].each { |item| required.push(item) }
