@@ -79,10 +79,10 @@
     allOf.each do |object|
       new_attributes = []
       if object.has_key?('$ref')
-        _, value = schema.dereference(object)
-        if value.has_key?('properties')
-          new_attributes = extract_attributes(schema, value['properties'])
-        end
+        _, object = schema.dereference(object)
+      end
+      if object.has_key?('allOf')
+        new_attributes = extract_allOf_attributes(schema, object['allOf'])
       elsif object.has_key?('properties')
         new_attributes = extract_attributes(schema, object['properties'])
       end

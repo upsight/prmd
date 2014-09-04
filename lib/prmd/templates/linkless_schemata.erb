@@ -48,7 +48,7 @@
 | Name | Type | Description | Example |
 | ------- | ------- | ------- | ------- |
   <%- attributes.each do |(key, type, description, example)| %>
-| <%- if required.include?(key) %>**<%- end %><%= key %><%- if required.include?(key) %>** (*)<%- end %> | *<%= type %>* | <%= description %> | <%= example %> |
+| <%- if required.include?(key) %>**<%- end %><%= key %><%- if required.include?(key) %>***<%- end %> | *<%= type %>* | <%= description %> | <%= example %> |
   <%- end %>
 <%- end %>
 
