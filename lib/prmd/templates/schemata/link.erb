@@ -10,20 +10,22 @@
 ```
 
 <%- if link.has_key?('schema') && link['schema'].has_key?('properties') %>
-  <%-
-    required, optional = link['schema']['properties'].partition do |k, v|
-      (link['schema']['required'] || []).include?(k)
-    end.map { |partition| Hash[partition] }
-  %>
-  <%- unless required.empty? %>
-#### Required Parameters
-<%= Erubis::Eruby.new(link_schema_properties_template).result(params: required, schema: schema, options: options) %>
 
+<%= link['description'] %>
+<%- if link['schema']['properties'] && !link['schema']['properties'].empty? %>
+  <%-
+    required = link['schema']['required']
+    attributes = extract_attributes(schema, link['schema']['properties'])
+  %>
+<%- end %>
+<%- unless attributes.empty? %>
+### Attributes
+| Name | Type | Description | Example |
+| ------- | ------- | ------- | ------- |
+  <%- attributes.each do |(key, type, description, example)| %>
+| <%- if required.include?(key) %>**<%- end %><%= key %><%- if required.include?(key) %>***<%- end %> | *<%= type %>* | <%= description %> | <%= example %> |
   <%- end %>
-  <%- unless optional.empty? %>
-#### Optional Parameters
-<%= Erubis::Eruby.new(link_schema_properties_template).result(params: optional, schema: schema, options: options) %>
-  <%- end %>
+<%- end %>
 <%- end %>
 
 #### Curl Example
