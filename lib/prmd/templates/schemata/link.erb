@@ -9,14 +9,18 @@
 <%= link['method'] %> <%= path %>
 ```
 
-<%- if link.has_key?('schema') && link['schema'].has_key?('properties') %>
+<%- if link.has_key?('schema') %>
+<%- link_schema = (schema.dereference(link['schema']))[1] %>
+
+<%- if link_schema.has_key?('properties') %>
 
 <%= link['description'] %>
-<%- if link['schema']['properties'] && !link['schema']['properties'].empty? %>
+<%- if link_schema['properties'] && !link_schema['properties'].empty? %>
   <%-
-    required = link['schema']['required']
-    attributes = extract_attributes(schema, link['schema']['properties'])
+    required = link_schema['required']
+    attributes = extract_attributes(schema, link_schema['properties'])
   %>
+<%- end %>
 <%- end %>
 <%- unless attributes.empty? %>
 ### Attributes
