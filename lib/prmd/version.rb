@@ -1,3 +1,12 @@
+# :nodoc:
 module Prmd
-  VERSION = "0.6.2"
+  # Well, duh, its a Version module, what did you expect?
+  module Version
+    MAJOR, MINOR, TEENY, PATCH = 0, 6, 2, nil
+    # version string
+    # @return [String]
+    STRING = [MAJOR, MINOR, TEENY, PATCH].compact.join('.').freeze
+  end
+  # @return [String]
+  VERSION = Version::STRING
 end

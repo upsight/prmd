@@ -1,7 +1,7 @@
 <%-
   return unless schemata.has_key?('links') && !schemata['links'].empty?
 
-  Prmd::Template::render(File.join('schemata', 'helper.erb'), options[:template], {
+  Prmd::Template.render('schemata/helper.erb', options[:template], {
     options:         options,
     resource:        resource,
     schema:          schema,
@@ -9,10 +9,13 @@
   })
 
   title = schemata['title'].split(' - ', 2).last
-%>
+-%>
+<%- unless options[:doc][:disable_title_and_description] %>
 <%= title %>
 ------------------------------
 <%= schemata['description'] %>
+<%- end -%>
+
 <%- if schemata['properties'] && !schemata['properties'].empty? %>
 ### Attributes
 | Name | Type | Description | Example |
@@ -24,7 +27,7 @@
 <%- end %>
 <%- schemata['links'].each do |link, datum| %>
 <%=
-  Prmd::Template::render(File.join('schemata', 'link.erb'), options[:template], {
+  Prmd::Template.render('schemata/link.md.erb', options[:template], {
     options:         options,
     resource:        resource,
     schema:          schema,
