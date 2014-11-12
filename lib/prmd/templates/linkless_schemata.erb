@@ -43,7 +43,7 @@
     attributes = extract_allOf_attributes(schema, schemata['allOf'])
   %>
 <%- end %>
-<%- unless attributes.empty? %>
+<%- unless !attributes || attributes.empty? %>
 ### Attributes
 | Name | Type | Description | Example |
 | ------- | ------- | ------- | ------- |
