@@ -2,6 +2,14 @@
   path = build_link_path(schema, link)
   response_example = link['response_example']
   link_schema_properties_template = Prmd::Template.load_template('link_schema_properties.md.erb', options[:template])
+
+  Prmd::Template::render(File.join('schemata', 'helper.erb'), options[:template], {
+    options:         options,
+    resource:        resource,
+    schema:          schema,
+    schemata:        schemata
+  })
+
 -%>
 ### <%= title %> <%= link['title'] %>
 <%= link['description'] %>
@@ -22,6 +30,12 @@
     attributes = extract_attributes(schema, link_schema['properties'])
   %>
 <%- end %>
+<%- end %>
+<%- if link_schema.has_key?('allOf') %>
+  <%-
+    required = extract_allOf_required(schema, link_schema['allOf'], '')
+    attributes = extract_allOf_attributes(schema, link_schema['allOf'])
+  %>
 <%- end %>
 <%- unless attributes.empty? %>
 ### Attributes
