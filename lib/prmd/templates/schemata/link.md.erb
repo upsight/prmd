@@ -21,15 +21,11 @@
 <%- if link.has_key?('schema') %>
 <%- link_schema = (schema.dereference(link['schema']))[1] %>
 
-<%- if link_schema.has_key?('properties') %>
-
-<%= link['description'] %>
 <%- if link_schema['properties'] && !link_schema['properties'].empty? %>
   <%-
     required = link_schema['required']
     attributes = extract_attributes(schema, link_schema['properties'])
   %>
-<%- end %>
 <%- end %>
 <%- if link_schema.has_key?('allOf') %>
   <%-
@@ -37,8 +33,9 @@
     attributes = extract_allOf_attributes(schema, link_schema['allOf'])
   %>
 <%- end %>
-<%- unless attributes.empty? %>
-### Attributes
+<%- unless !attributes || attributes.empty? %>
+<%- required ||= [] %>
+#### Request Attributes
 | Name | Type | Description | Example |
 | ------- | ------- | ------- | ------- |
   <%- attributes.each do |(key, type, description, example)| %>
@@ -62,6 +59,26 @@
   })
 %>
 
+<%- if link.has_key?('targetSchema') && link['targetSchema'].has_key?('properties') %>
+  <%-
+    response_required = link['required']
+    response_attributes = extract_attributes(schema, link['targetSchema']['properties'])
+  %>
+<%- if link['targetSchema']['allOf'] %>
+  <%-
+    response_required = extract_allOf_required(schema, link['targetSchema']['allOf'], '')
+    response_attributes = extract_allOf_attributes(schema, link['targetSchema']['allOf'])
+  %>
+<%- end %>
+<%- end %>
+<%- unless !response_attributes || response_attributes.empty? %>
+#### Response Attributes
+| Name | Type | Description | Example |
+| ------- | ------- | ------- | ------- |
+  <%- response_attributes.each do |(key, type, description, example)| %>
+| <%- if response_required && response_required.include?(key) %>**<%- end %><%= key %><%- if response_required && response_required.include?(key) %>***<%- end %> | *<%= type %>* | <%= description %> | <%= example %> |
+  <%- end %>
+<%- end %>
 #### Response Example
 ```
 <%- if response_example %>

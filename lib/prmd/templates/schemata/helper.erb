@@ -37,7 +37,7 @@
 
       # found a nested object
       elsif value['properties']
-        attributes << build_attribute(schema, key, value)
+#        attributes << build_attribute(schema, key, value)
         nested = extract_attributes(schema, value['properties'])
         nested.each do |attribute|
           attribute[0] = "#{key}:#{attribute[0]}"
@@ -122,6 +122,7 @@
   end
 
   def build_attribute(schema, key, value)
+  _, value = schema.dereference(value)
     description = value['description'] || ""
     if value['default']
       description += "<br/> **default:** `#{value['default'].to_json}`"

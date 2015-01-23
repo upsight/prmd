@@ -102,14 +102,34 @@ module Prmd
         end
         ref = id_ref || value['anyOf'].first
         schema_example(ref)
+      elsif value.key?('oneOf')
+        id_ref = value['oneOf'].find do |ref|
+          ref['$ref'] && ref['$ref'].split('/').last == 'id'
+        end
+        ref = id_ref || value['oneOf'].first
+        schema_example(ref)
       elsif value.key?('properties') # nested properties
         schema_example(value)
       elsif value.key?('items') # array of objects
         _, items = dereference(value['items'])
         if value['items'].key?('example')
           [items['example']]
+        elsif items.key?('oneOf')
+          id_ref = items['oneOf'].find do |ref|
+            ref['$ref'] && ref['$ref'].split('/').last == 'id'
+          end
+          ref = id_ref || items['oneOf'].first
+          [schema_example(ref)]
         else
           [schema_example(items)]
+        end
+      end
+    end
+
+    def recursive_dref(ref)
+      _, deref = dereference(ref)
+      if deref.is_a?(Hash)
+        deref.each do |key, value|
         end
       end
     end
@@ -117,9 +137,14 @@ module Prmd
     # @param [Hash, String] schema
     def schema_example(schema)
       _, dff_schema = dereference(schema)
-
       if dff_schema.has_key?('example')
-        dff_schema['example']
+
+        if dff_schema['example'].is_a?(String)
+          dff_schema['example']
+        else
+          key, ref = recursive_deref(dff_schema['example'])
+          schema_example(ref)
+        end
       elsif dff_schema.has_key?('allOf')
         example = {}
         dff_schema['allOf'].each do |object|
