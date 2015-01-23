@@ -125,7 +125,8 @@ module Prmd
         dff_schema['allOf'].each do |object|
           temp_example = {}
           if object.has_key?("$ref")
-            temp_example = schemata_example(object['$ref'].split('/').last)
+            _, deref = dereference(object['$ref'])
+            temp_example = schema_example(deref)
           else            
             temp_example = schema_example(object)
           end
