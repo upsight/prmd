@@ -11,19 +11,21 @@
   title = schemata['title'].split(' - ', 2).last
 -%>
 <%- unless options[:doc][:disable_title_and_description] %>
-<%= title %>
-------------------------------
+## <%= title %>
+
 <%= schemata['description'] %>
 <%- end -%>
 
 <%- if schemata['properties'] && !schemata['properties'].empty? %>
 ### Attributes
+
 | Name | Type | Description | Example |
 | ------- | ------- | ------- | ------- |
 <%- required = extract_required(schema, schemata['allOf'], '') %>
 <%- extract_attributes(schema, schemata['properties']).each do |(key, type, description, example)| %>
 | <%- if required.include?(key) %>**<%- end %><%= key %><%- if required.include?(key) %>***<%- end %> | *<%= type %>* | <%= description %> | <%= example %> |
 <%- end %>
+
 <%- end %>
 <%- schemata['links'].each do |link, datum| %>
 <%=

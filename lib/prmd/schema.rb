@@ -113,7 +113,11 @@ module Prmd
       elsif value.key?('items') # array of objects
         _, items = dereference(value['items'])
         if value['items'].key?('example')
-          [items['example']]
+          if items["example"].is_a?(Array)
+            items["example"]
+          else
+            [items['example']]
+          end
         elsif items.key?('oneOf')
           id_ref = items['oneOf'].find do |ref|
             ref['$ref'] && ref['$ref'].split('/').last == 'id'

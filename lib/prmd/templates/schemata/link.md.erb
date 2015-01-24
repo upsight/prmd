@@ -12,6 +12,7 @@
 
 -%>
 ### <%= title %> <%= link['title'] %>
+
 <%= link['description'] %>
 
 ```
@@ -26,7 +27,7 @@
     required = link_schema['required']
     attributes = extract_attributes(schema, link_schema['properties'])
   %>
-<%- end %>
+  <%- end %>
 <%- if link_schema.has_key?('allOf') %>
   <%-
     required = extract_allOf_required(schema, link_schema['allOf'], '')
@@ -36,6 +37,7 @@
 <%- unless !attributes || attributes.empty? %>
 <%- required ||= [] %>
 #### Request Attributes
+
 | Name | Type | Description | Example |
 | ------- | ------- | ------- | ------- |
   <%- attributes.each do |(key, type, description, example)| %>
@@ -45,6 +47,7 @@
 <%- end %>
 
 #### Curl Example
+
 <%=
   curl_options = options.dup
   http_header = link['http_header'] || {}
@@ -80,6 +83,7 @@
   <%- end %>
 <%- end %>
 #### Response Example
+
 ```
 <%- if response_example %>
 <%=   response_example['head'] %>
@@ -95,6 +99,7 @@ HTTP/1.1 <%=
   end %>
 <%- end %>
 ```
+
 ```json
 <%- if response_example %>
 <%=   response_example['body'] %>
